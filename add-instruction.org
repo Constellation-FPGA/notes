@@ -1,0 +1,54 @@
+#+TITLE: Adding an Instruction to a Chipyard Design
+#+AUTHOR: Karl Hallsby
+
+* Instruction Mnemonic & Bit Pattern
+  1. Must separately clone ~riscv-tools~ repository.
+  2. Go to an opcode file, and add your instruction's pattern.
+  3. For example, ~mod r1, r2, r3~, which does: ~R[r1] = R[r2] % R[r3]~.
+     ~mod     rd rs1 rs2 31..25=1  14..12=0 6..2=0x1A 1..0=3~
+  4. Use the Makefile to parse the opcodes and generate encodings you need.
+     * Note that the Python script is written in Python 2!
+     * Can use Python 3's included ~2to3~ script to fix that
+  5. Generate the C version for a header file, yielding:
+     ~#define MATCH_MOD 0x200006b #define MASK_MOD 0xfe00707f~
+
+* Add Instruction to GCC & Binutils
+  1. Add the MATCH and MASK bit patterns to ~chipyard/toolchains/riscv-tools/riscv-gnu-toolchain/riscv-binutils/include/opcode/riscv-opc.h~
+  2. Edit ~chipyard/toolchains/riscv-tools/riscv-gnu-toolchain/riscv-binutils/opcodes/riscv-opc.c~ with how to match the opcode mnemonic.
+     * The format has changed from many examples online.
+     * ~{"mod",         0, {"I", 0},   "d,s,t",  MATCH_MOD, MASK_MOD, match_opcode, 0 },~
+     * TODO: Figure out every field in the above array.
+  3. Recompile the toolchain with ~./scripts/build-toolchain.sh riscv-tools~ from the chipyard root.
+  4. Can verify by writing inline assembly C, compiling, then objdump-ing the resulting binary.
+  5. Note that chipyard installs the built binaries to ~chipyard/riscv-tools-install/bin/~
+
+* Simulator (Spike)
+  * Need to add functional description of instruction to Spike simulator.
+  * ~chipyard/toolchains/riscv-tools/riscv-isa-sim/riscv/insns/instruction-mnemonic.h~
+    - File name *MUST* match the instruction's mnemonic!
+  * Use other functional tests in this directory to build yours.
+  * To ensure your instruction is properly printed by the disassembler logger, you must add the MATCH and MASK bit patterns to ~chipyard/toolchains/riscv-tools/riscv-isa-sim/riscv/encoding.h~.
+    You must also use the ~DECLARE~ macro to declare the instruction as well.
+
+* Tests (ISA & Performance)
+  * These are tests that are run on both the functional simulator and the Verilog simulator using your generated design.
+    - Written in C++ to describe *behavior* accurately.
+  * ISA tests are in ~chipyard/riscv-tools-install/riscv64-unknown-elf/share/riscv-tests/isa/~
+    - Are intended to provide tests for a *single* instruction.
+  * To add a test for a given CPU implmentation, need to find that CPU's test suite.
+    - This test suite is usually written in Scala and generates a Makefile.
+      + Yes, this is a mess of string interpolation and escaping. A big mess.
+    - For example, rocket-chip-based chips use ~chipyard/generators/rocket-chip/src/main/scala/system/RocketTestSuite.scala~.
+    - Add file name of test to ~LinkedHashSet~ of names.
+    - This name *must* correspond to a test in ~toolchains/riscv-tools/riscv-tests/isa~!
+
+* Add Instruction to CPU
+  * Edit the Chisel Scala to implement the instruction.
+  * How this is done is processor-dependent.
+  * Edit the instruction decoding phase.
+    - Use the Scala/Chisel encodings from the [[*Instruction Mnemonic & Bit Pattern][Instruction Mnemonic & Bit Pattern]] to add to the decoding phase.
+  * Add to the appropriate processor component(s).
+    - For ~mod~, I chose to just reuse the ~rem~ hardware.
+    - In this case, I am assuming all integers provided are positive.
+      This makes ~mod~ and ~rem~ nearly the same.
+      The difference comes when we include negative integers.
