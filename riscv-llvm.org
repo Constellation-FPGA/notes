@@ -1,0 +1,94 @@
+#+TITLE: Compiling LLVM/Clang to Target RISC-V
+#+AUTHOR: Karl Hallsby
+
+These notes are adapted from [[https://github.com/sifive/riscv-llvm][SiFive's original LLVM/Clang build]].
+
+Global Environment Variables
+#+begin_src bash
+export RISCV_INSTALL_DIR="path/to/tool/install/dir"
+#+end_src
+
+* Build GCC
+** Prerequisites
+#+begin_src bash
+sudo apt-get -y install \
+  binutils build-essential libtool texinfo \
+  gzip zip unzip patchutils curl git \
+  make automake bison flex gperf \
+  grep sed gawk python bc \
+  zlib1g-dev libexpat1-dev libmpc-dev \
+  libglib2.0-dev libfdt-dev libpixman-1-dev
+#+end_src
+
+** Fetch Sources
+#+begin_src bash
+git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
+RISCV_GNU_SRC="path/to/riscv-gnu-toolchain"
+#+end_src
+
+** Configure Build
+#+begin_src bash
+mkdir _build-riscv-gnu-toolchain
+pushd _build-riscv-gnu-toolchain
+RISCV_GNU_BUILD=`pwd`
+$RISCV_GNU_SRC/configure --prefix="$RISCV_INSTALL_DIR" --enable-multilib
+# Multilib here means that RV32 & RV64 will be built
+#+end_src
+
+** Build & Install
+#+begin_src bash
+make -j`nproc`
+popd
+#+end_src
+
+You should end up in the directory above the ~$RISCV_GNU_BUILD~ directory.
+This directory should hold at least ~$RISCV_GNU_SRC~ and ~$RISCV_GNU_BUILD~.
+
+* Build LLVM
+** Prerequisites
+#+begin_src bash
+sudo apt-get -y install \
+  binutils build-essential cmake ninja-build grep sed gawk
+#+end_src
+
+** Fetch Sources
+#+begin_src bash
+git clone https://github.com/llvm/llvm-project.git riscv-llvm
+RISCV_LLVM_SRC="path/to/riscv-llvm"
+#+end_src
+
+** Configure Build
+#+begin_src bash
+pushd riscv-llvm
+ln -s ../../clang llvm/tools || true
+
+mkdir _build-riscv-llvm
+cd _build-riscv-llvm
+RISCV_LLVM_BUILD=`pwd`
+
+cmake -G Ninja -DCMAKE_BUILD_TYPE="Release" \
+      -DBUILD_SHARED_LIBS=True \
+      -DLLVM_USE_SPLIT_DWARF=True \
+      -DCMAKE_INSTALL_PREFIX="$RISCV_INSTALL_DIR" \
+      -DLLVM_OPTIMIZED_TABLEGEN=True \
+      -DLLVM_BUILD_TESTS=False \
+      -DDEFAULT_SYSROOT="$RISCV_INSTALL_DIR/riscv64-unknown-elf" \
+      -DLLVM_DEFAULT_TARGET_TRIPLE="riscv64-unknown-elf" \
+      -DLLVM_TARGETS_TO_BUILD="RISCV" \
+      $RISCV_LLVM_SRC/llvm
+#+end_src
+
+** Build & Install
+#+begin_src bash
+cmake --build . --parallel 8 --target install
+popd
+#+end_src
+
+You should end up in the directory above ~$RISCV_LLVM_BUILD~.
+This directory should hold at least ~$RISCV_LLVM_SRC~ and ~$RISCV_LLVM_BUILD~.
+
+* Making RISC-V Tools Available
+To make the newly compiled GNU, GCC, LLVM, and Clang tools available to the shell, you need to re-export ~$PATH~.
+#+begin_src bash
+export PATH=$PATH:"$RISCV_INSTALL_DIR/bin"
+#+end_src
