@@ -1,2 +1,69 @@
 #+VCODE RoCC Accelerator & Chipyard Setup
 #+AUTHOR: Karl Hallsby
+
+* Dependencies
+** Verilator
+Verilator is needed by Chipyard to compile software simulations.
+
+Verilator must end up in ~$PATH~ for Chipyard to use it.
+So, if you do not have superuser permissions, or only want a user-local install, use the ~--prefix~ flag in the [[*Configure][Configure]] step.
+
+*** Dependencies
+   1. GCC
+   2. flex
+   3. bison
+   4. Make
+   5. autoconf
+
+On Ubuntu:
+#+begin_src sh
+$ sudo apt-get install -y build-essential autoconf
+#+end_src
+
+*** Verilator Repository
+#+begin_src sh
+$ git clone http://git.veripool.org/git/verilator
+$ cd verilator
+#+end_src
+
+*** Configure
+The Chipyard documentation says you should use ~v4.034~ of Verilator.
+However, I have encountered issues with it, like a missing ~verilator.h~ header.
+This newer version appears to be compatible, but it does throw extra warnings about the inference of certain edge-triggered flip-flops.
+#+begin_src sh
+$ git checkout v4.224
+$ autoconf
+$ ./configure --prefix=<binary-install-directory>
+# My preference is --prefix="$HOME/verilator-v4.224-install"
+#+end_src
+
+*** Build
+Building verilator is fairly fast.
+You can parallelize the compilation by using ~-j$(nproc)~.
+However, I have encountered strange compilation issues on *very* parallel compilations.
+#+begin_src sh
+$ make -j$(nproc)
+
+# You can skip testing the binaries if you want.
+$ make test # You can parallelize this with -j as well
+#+end_src
+
+*** Install
+If you used the ~--prefix~ flag in the [[*Configure][Configure]] step, then you probably will not need ~sudo~ permissions.
+#+begin_src sh
+$ make install # If you install to a root-owned directory, you will need sudo
+#+end_src
+
+*** Make Available
+Chipyard requires that the binaries created by verilator be in ~$PATH~.
+I prefer to just export the directory in my ~.bashrc~.
+I usually prepend my verilator install to the front of ~$PATH~ to ensure I use my install first.
+#+begin_src sh
+export PATH="$HOME/verilator-v4.224-install/bin":"$PATH"
+#+end_src
+
+You can check that you are using the right Verilator with the commands below:
+#+begin_src sh
+$ which verilator # Should return the path to your install of verilator
+$ verilator --version # Should return the version & build date
+#+end_src
