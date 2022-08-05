@@ -202,3 +202,12 @@ autoconf && ./configure --prefix="$HOME/verilator-v4.224-install" && make -j$(np
 echo "export PATH=$HOME/verilator-v4.224-install/bin:$PATH" >> "$HOME/.bashrc"
 #+end_src
 
+* Usage
+** Building an SoC Design
+Normally, I start by running software simulations using verilator, before moving on.
+#+begin_src sh
+$ cd sims/verilator
+# To build the vcode-rocc design, you must pass a CONFIG option
+$ make CONFIG=VCodeRocketPrintfConfig # PrintfConfig will add printfs to synthesized design.
+#+end_src
+
