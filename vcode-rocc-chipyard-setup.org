@@ -211,3 +211,14 @@ $ cd sims/verilator
 $ make CONFIG=VCodeRocketPrintfConfig # PrintfConfig will add printfs to synthesized design.
 #+end_src
 
+** Active development of vcode-rocc Accelerator
+For active development, it is a hassle to use git submodules like Chipyard does.
+What I prefer to do instead is to replace the submodule with a symlink to a separate clone of vcode-rocc.
+#+begin_src sh
+$ cd generators
+$ rm -rf vcode-rocc
+$ ln -s <path-to-separate-vcode-rocc-clone>
+#+end_src
+
+The build system will not know the difference, and everything should work just as normal.
+
