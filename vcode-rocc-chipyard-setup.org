@@ -67,3 +67,83 @@ You can check that you are using the right Verilator with the commands below:
 $ which verilator # Should return the path to your install of verilator
 $ verilator --version # Should return the version & build date
 #+end_src
+
+* Quick Setup
+** Ubuntu Script
+This is taken directly from [[https://chipyard.readthedocs.io/en/stable/Chipyard-Basics/Initial-Repo-Setup.html][Chipyard's Documentation]].
+The script should work on any Ubuntu newer than 16.04 LTS.
+#+begin_src sh
+#!/usr/bin/env bash
+
+set -ex
+
+sudo apt-get install -y build-essential bison flex software-properties-common curl
+sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev zlib1g-dev vim default-jdk default-jre
+# install sbt: https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html#Ubuntu+and+other+Debian-based+distributions
+echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add
+sudo apt-get update
+sudo apt-get install -y sbt
+sudo apt-get install -y texinfo gengetopt
+sudo apt-get install -y libexpat1-dev libusb-dev libncurses5-dev cmake
+# deps for poky
+sudo apt-get install -y python3.8 patch diffstat texi2html texinfo subversion chrpath wget
+# deps for qemu
+sudo apt-get install -y libgtk-3-dev gettext
+# deps for firemarshal
+sudo apt-get install -y python3-pip python3.8-dev rsync libguestfs-tools expat ctags
+# install DTC
+sudo apt-get install -y device-tree-compiler
+sudo apt-get install -y python
+# install git >= 2.17
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt-get update
+sudo apt-get install git -y
+
+# install verilator
+git clone http://git.veripool.org/git/verilator
+cd verilator
+git checkout v4.224
+autoconf && ./configure --prefix="$HOME/verilator-v4.224-install" && make -j$(nproc) && make install
+echo "export PATH=$HOME/verilator-v4.224-install/bin:$PATH" >> "$HOME/.bashrc"
+#+end_src
+
+** CentOS Script
+This is taken directly from [[https://chipyard.readthedocs.io/en/stable/Chipyard-Basics/Initial-Repo-Setup.html][Chipyard's Documentation]].
+#+begin_src sh
+#!/usr/bin/env bash
+
+set -ex
+
+sudo yum groupinstall -y "Development tools"
+sudo yum install -y gmp-devel mpfr-devel libmpc-devel zlib-devel vim git java java-devel
+
+# Install SBT https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html#Red+Hat+Enterprise+Linux+and+other+RPM-based+distributions
+# sudo rm -f /etc/yum.repos.d/bintray-rpm.repo
+# Use rm above if sbt installed from bintray before.
+curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
+sudo mv sbt-rpm.repo /etc/yum.repos.d/
+
+sudo yum install -y sbt texinfo gengetopt
+sudo yum install -y expat-devel libusb1-devel ncurses-devel cmake "perl(ExtUtils::MakeMaker)"
+# deps for poky
+sudo yum install -y python38 patch diffstat texi2html texinfo subversion chrpath git wget
+# deps for qemu
+sudo yum install -y gtk3-devel
+# deps for firemarshal
+sudo yum install -y python38-pip python38-devel rsync libguestfs-tools makeinfo expat ctags
+# Install GNU make 4.x (needed to cross-compile glibc 2.28+)
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-8-make
+# install DTC
+sudo yum install -y dtc
+sudo yum install -y python
+
+# install verilator
+git clone http://git.veripool.org/git/verilator
+cd verilator
+git checkout v4.224
+autoconf && ./configure --prefix="$HOME/verilator-v4.224-install" && make -j$(nproc) && make install
+echo "export PATH=$HOME/verilator-v4.224-install/bin:$PATH" >> "$HOME/.bashrc"
+#+end_src
+
