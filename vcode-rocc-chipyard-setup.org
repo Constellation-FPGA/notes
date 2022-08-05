@@ -248,3 +248,9 @@ $ make
 
 The build system should generate both a raw binary, ~test.riscv~, and an ELF file, ~test~, that could be run in an emulator like QEMU.
 
+** Running Binaries on the Simulated vcode-rocc Design
+To run the binaries, you need to provide the path to the binary as the ~BINARY~ flag to ~make~ and then run the ~run-binary~ target.
+#+begin_src
+$ cd chipyard/sims/verilator
+$ make CONFIG=VCodeRocketPrintfConfig BINARY=vcode-rocc/tests/bin/<test>.riscv run-binary
+#+end_src
