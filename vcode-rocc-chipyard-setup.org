@@ -113,6 +113,16 @@ Once the toolchain is built, an ~env-<toolchain-name>.sh~ file is generated, whi
 $ source env.sh
 #+end_src
 
+** vcode-rocc
+You only need to clone this repository if you are doing active development on the accelerator.
+If you just want to use the accelerator in a design, without developing it, then you just need to clone [[*Repository][Chipyard]] and run its [[*Initialize Submodules][submodule-initialization]] step.
+
+*** Repository
+#+begin_src sh
+$ git clone https://github.com/Constellation-FPGA/vcode-rocc.git
+$ cd vcode-rocc
+#+end_src
+
 * Quick Setup
 ** Ubuntu Script
 This is taken directly from [[https://chipyard.readthedocs.io/en/stable/Chipyard-Basics/Initial-Repo-Setup.html][Chipyard's Documentation]].
