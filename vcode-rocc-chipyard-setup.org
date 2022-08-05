@@ -68,6 +68,51 @@ $ which verilator # Should return the path to your install of verilator
 $ verilator --version # Should return the version & build date
 #+end_src
 
+** Chipyard
+Chipyard is a very large install, approaching 30+ GB.
+Make sure you have enough space.
+All of the instructions below can also be found on [[https://chipyard.readthedocs.io/en/stable/Chipyard-Basics/Initial-Repo-Setup.html][Chipyard's Setup Documentation]].
+
+*** Dependencies
+There are lots of dependencies.
+Look at the [[*Quick Setup][Quick Setup]] scripts for what you will need.
+
+*** Repository
+#+begin_src sh
+$ git clone https://github.com/Constellation-FPGA/chipyard.git
+$ cd chipyard
+$ git checkout vcode-rocc
+#+end_src
+
+*** Initialize Submodules
+#+begin_src sh
+$ ./scripts/init-submodules-no-riscv-tools.sh
+#+end_src
+If you checked out the ~vcode-rocc~ branch, the script will warn you that this is not an official release of Chipyard, which is expected.
+Enter ~y~ to continue with fetching all the submodules needed.
+
+Once the submodules are built, an ~env.sh~ file is generated, which creates some environment variables.
+
+*** Build RISC-V Toolchain
+I recommend you parallelize this build by exporting the ~MAKEFLAGS~ environment variable.
+#+begin_src sh
+$ export MAKEFLAGS=-jN # N is number of jobs to run in parallel
+#+end_src
+
+Because we intend to build a RoCC-based accelerator, we use the ~esp-tools~ toolchain.
+However, cursory testing shows that ~riscv-tools~ will also work.
+#+begin_src sh
+$ ./scripts/build-toolchains.sh esp-tools # for a RoCC RISC-V toolchain
+# $ ./scripts/build-toolchains.sh riscv-tools # for a normal risc-v toolchain
+#+end_src
+
+Once the toolchain is built, an ~env-<toolchain-name>.sh~ file is generated, which will then be sourced by the ~env.sh~ script.
+
+*** Source the Toolchain
+#+begin_src sh
+$ source env.sh
+#+end_src
+
 * Quick Setup
 ** Ubuntu Script
 This is taken directly from [[https://chipyard.readthedocs.io/en/stable/Chipyard-Basics/Initial-Repo-Setup.html][Chipyard's Documentation]].
