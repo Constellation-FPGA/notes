@@ -222,3 +222,29 @@ $ ln -s <path-to-separate-vcode-rocc-clone>
 
 The build system will not know the difference, and everything should work just as normal.
 
+*** Building the Testing Binaries
+Building the binaries requires a full RISC-V toolchain.
+The Chipyard one works perfectly fine ([[*Build RISC-V Toolchain][Build RISC-V Toolchain]]).
+Once the toolchain is built, source the ~env.sh~ file to set the ~$RISCV~ environment variable.
+#+begin_src sh
+$ source chipyard/env.sh
+$ cd vcode-rocc/test
+$ make
+#+end_src
+
+*** Adding additional Program Tests
+To add another program to test on the vcode-rocc Rocket design, you write a new C source file, add the new file to ~modules.mk~, then build them.
+There are several examples of how to write a test in the ~test/src~ directory.
+#+begin_src sh
+$ source chipyard/env.sh
+$ cd vcode-rocc/test
+$ pushd src
+$ vim <test-name>.c # Write your test here.
+# You could also copy an already-written test and replace what you need there.
+$ vim modules.mk # Add the file name of your test to the list
+$ popd
+$ make
+#+end_src
+
+The build system should generate both a raw binary, ~test.riscv~, and an ELF file, ~test~, that could be run in an emulator like QEMU.
+
