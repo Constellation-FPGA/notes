@@ -1,4 +1,4 @@
-#+VCODE RoCC Accelerator & Chipyard Setup
+#+TITLE: VCODE RoCC Accelerator & Chipyard Setup
 #+AUTHOR: Karl Hallsby
 
 * Dependencies
