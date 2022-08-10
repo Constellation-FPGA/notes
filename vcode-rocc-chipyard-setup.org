@@ -77,6 +77,9 @@ All of the instructions below can also be found on [[https://chipyard.readthedoc
 There are lots of dependencies.
 Look at the [[*Quick Setup][Quick Setup]] scripts for what you will need.
 
+*NOTE: You should use openjdk 17!*
+openJDK 18 has some known issues with Scala & SBT.
+
 *** Repository
 #+begin_src sh
 $ git clone https://github.com/Constellation-FPGA/chipyard.git
@@ -133,6 +136,7 @@ The script should work on any Ubuntu newer than 16.04 LTS.
 set -ex
 
 sudo apt-get install -y build-essential bison flex software-properties-common curl
+# Make sure default-jdk & default-jre are openjdk 17!
 sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev zlib1g-dev vim default-jdk default-jre
 # install sbt: https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html#Ubuntu+and+other+Debian-based+distributions
 echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
@@ -171,6 +175,7 @@ This is taken directly from [[https://chipyard.readthedocs.io/en/stable/Chipyard
 set -ex
 
 sudo yum groupinstall -y "Development tools"
+# Make sure java & java-devel are openjdk 17!
 sudo yum install -y gmp-devel mpfr-devel libmpc-devel zlib-devel vim git java java-devel
 
 # Install SBT https://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html#Red+Hat+Enterprise+Linux+and+other+RPM-based+distributions
