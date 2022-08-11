@@ -208,6 +208,12 @@ echo "export PATH=$HOME/verilator-v4.224-install/bin:$PATH" >> "$HOME/.bashrc"
 #+end_src
 
 * Usage
+The commands from here on out expect you to have a working RISC-V toolchain.
+Make sure you:
+#+begin_src sh
+$ source chipyard/env.sh
+#+end_src
+
 ** Building an SoC Design
 Normally, I start by running software simulations using verilator, before moving on.
 #+begin_src sh
