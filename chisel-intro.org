@@ -1,0 +1,6 @@
+#+TITLE: Chisel Introduction
+#+AUTHOR: Karl Hallsby
+
+* Beginner Materials
+  1. [[https://github.com/freechipsproject/chisel-bootcamp][Chisel Bootcamp (From Chisel Working-Group)]]
+  2. [[https://github.com/ucb-bar/chisel-tutorial][Chisel Tutorial (From Berkeley)]]
