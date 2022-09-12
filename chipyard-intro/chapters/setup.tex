@@ -1,0 +1,305 @@
+\chapter{Setup}\label{chap:Setup}
+\section{Introduction}\label{sec:Introduction}
+This document is intended to serve as a record of the work performed for the ECE 497 special project supervised by Professor Jia Wang during the Spring 2021 semester.
+In this document, we will specify how our project repository was created, outline issues we ran into, and provide guidance on how to better setup the Chipyard Framework.
+
+Chipyard is a framework for designing, \glslink{elaboration}{elaborating}, simulating, testing, and building \Gls{riscv} CPU designs.
+It provides the functionality to define a set of standard CPU designs, but also allows for the end-user to describe their own custom designs and integrate them as first-class citizens in the framework.
+It also provides a toolkit for verifying that \glslink{elaboration}{elaborated} CPU designs meet the \Gls{riscv} \Gls{isa} standard, ensuring designed chips are compliant.
+There are also tools for writing the \glslink{elaboration}{elaborated} designs out to \gls{fpga} bitstreams, so that simulation can be sped up and execution can occur on \glspl{softcore}.
+Lastly, Chipyard includes tools for a VLSI-design workflow, to implement the \glslink{elaboration}{elaborated} CPU design on actual silicon.
+
+\section{Project Environment}\label{sec:Project_Environment}
+The first step to using the Chipyard Framework is creating a project environment and obtaining all of the Chipyard dependencies.
+In this document, we assume you are using Ubuntu 20.04 LTS in a virtual machine with the following system specifications, or running the Docker container with the host machine having \textbf{at least}:
+\begin{itemize}
+\item 4 cores
+\item \SI{16}{\giga\byte} of RAM, or more
+\item \SI{250}{\giga\byte} disk image
+\end{itemize}
+
+Much of the disk space that has been allocated will be utilized, as the entire \Gls{riscv} toolchain and Xilinx Vivado Suite require a large amount of disk space.
+
+This document will work equally well in other distributions (Fedora, CentOS, OpenSuSE, Archlinux, etc.), so long as the versions of the dependencies are matched.
+Chipyard has explicit support for CentOS, extending to Fedora and RHEL as well.
+
+Using Linux as the native operating system, rather than as a virtual machine is the preferred way of working with Chipyard.
+This gives the running system \emph{all} available system resources and removes the virtual machine execution penalty.
+
+\subsection{Docker Container}\label{sec:Docker_Container}
+To ease the distribution of the required dependencies, we have included a \href{https://github.com/KarlJoad/ece497/blob/master/docker/Dockerfile}{Dockerfile} for building an environment very similar to ours.
+\Cref{lst:Build_Docker_Image} shows how to build the image, \emph{after} having cloned \href{https://github.com/KarlJoad/ece497}{our} repository.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+DOCKER_BUILDKIT=1 docker build -t ece497:deliverable ./
+\end{bashsource}
+\caption{Build Docker Image}
+\label{lst:Build_Docker_Image}
+\end{listing}
+
+Note that this image will take a \emph{very} long time to build.
+It not only creates a new Ubuntu image for you to work with, it also:
+\begin{enumerate}
+\item Updates Ubuntu to the latest version
+\item Fetches and builds Verilator from \gls{source}
+\item Fetches Chipyard
+\item Initializes Chipyard's submodule dependencies
+\item Builds the \Gls{riscv} toolchain Chipyard relies on
+\end{enumerate}
+
+Once the Docker image is built, you can spawn as many instances as you need, using the command in \Cref{lst:Run_Enter_Docker_Container}.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+docker run -it --user chipyard ece497:deliverable /bin/bash
+\end{bashsource}
+\caption{Run and Enter Docker Container}
+\label{lst:Run_Enter_Docker_Container}
+\end{listing}
+
+\section{Document Typesetting}\label{sec:Doc_Typesetting}
+This document makes use of a variety of different fonts and colors to denote different aspects of this work.
+Each of the different font settings are explained here.
+
+\begin{description}
+\item[\texttt{Teletype Text}] Computing-related topics/items.
+  This is typically used to denote terms you will see in this document, repository, and other materials surroudning this topic, but do not correlate to any of the other options presented in this list.
+\item[\file{file/path}] A relative file path.
+  This is typically used with \file{chipyard/subdir}, meaning you should move to the specified subdirectory or file \emph{inside} of the Chipyard subdirectory.
+  File paths will only look this way when a file is specified by itself.
+  In a command, this highlighting will not be present.
+\item[\file{/file/path}] An absolute file path.
+  When specified this way, you must provide the entire path specified.
+  File paths will only look this way when a file is specified by itself.
+  In a command, this highlighting will not be present.
+% NOTE: The textcolors below should match the ones defined in hypersetup in doc.tex!
+\item[\textnormal{\textcolor{blue}{Blue Text}}] A link to another location within this document.
+  Clicking other word(s) that look like this will take you to a different place inside this document.
+\item[\textnormal{\textcolor{cyan}{URL Link}}] A link to take you outside of this document.
+\item[\bashinline{cmd-to-run}] A command to run in your terminal.
+  We assume you are using the Bash shell.
+\end{description}
+
+In addition, we make use of \gls{man} syntax here.
+This means that text inside of angle brackes is mandatory, inside of square brackets is optional, and the vertical pipe is an ``or.''
+An example is shown in \Cref{lst:man_Syntax}.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+command <mandatory-arg> [optional-arg-1] [optional-arg-2a | optional-arg-2b]
+\end{bashsource}
+\caption{\gls{man} Syntax}
+\label{lst:man_Syntax}
+\end{listing}
+
+\begin{blackbox}
+  Text inside black boxes, like this one, is meant to provide an area for notes that should be remembered.
+  For example, some of these provide reminders to \glslink{multithread}{parallelize} code compilation to speed up the process.
+\end{blackbox}
+
+\section{Building Chipyard}\label{sec:Building_Chipyard}
+Here, we present the necessary steps to retrieving all the dependencies required to set up Chipyard for local development and simulation use.
+The larger code listings shown in this document is gathered in the \file{code} subdirectory of this document's project directory.
+We developed this documentation using version \href{https://github.com/ucb-bar/chipyard/releases/tag/1.4.0}{\textbf{1.4.0}}\footnote{Git Commit Hash: \href{https://github.com/ucb-bar/chipyard/commit/58076cfb260a3be502d6d1c25b577da39277a7fc}{58076cfb260a3be502d6d1c25b577da39277a7fc}} of Chipyard.
+
+\subsection{Chipyard Dependencies}\label{sec:Chipyard_Dependencies}
+To gather the Chipyard dependencies, follow the \href{https://chipyard.readthedocs.io/en/latest/}{Chipyard} documentation closely.
+Specifically, the \href{https://chipyard.readthedocs.io/en/latest/Chipyard-Basics/Initial-Repo-Setup.html}{Section 1.4} of the documentation outlines how to prepare your operating system for development using the Chipyard framework.
+
+A paraphrased reproduction of these steps are shown below.
+
+\subsubsection{Retrieve/Install Dependencies}\label{sec:Retrive_Install_Dependencies}
+Chipyard relies on numerous dependencies and libraries to read files and build the required Verilog files.
+In addition, Chipyard relies on \gls{sbt}, because a majority of Chipyard and its dependencies are written in Scala.
+
+\Cref{lst:Ubuntu_Chipyard_Deps_Setup} is a script that handles fetching and installing all the dependencies for you.
+Note that this does \textbf{not} work for installing the dependencies for Linux distributions that do not use the \texttt{apt} package manager.
+
+\begin{listing}[h!tbp]
+\bashsourcefile{./code/ubuntu-chipyard-deps-setup.sh}
+\caption{Fetch Chipyard Dependencies using \texttt{apt} on Ubuntu}
+\label{lst:Ubuntu_Chipyard_Deps_Setup}
+\end{listing}
+
+\subsubsection{Build Verilator from Source}\label{sec:Build_Verilator_from_Source}
+Chipyard's documentation recommends building \href{https://www.veripool.org/wiki/verilator}{Verilator} (an open-source (System)Verilog simulator and compiler) from \gls{source}.
+
+A small script has been provided that handles this for you in \Cref{lst:Build_Verilator_from_Source}.
+Note that this does \textbf{not} work for installing the dependencies required to build Verilator for Linux distributions that do not use the \texttt{apt} package manager.
+
+\begin{listing}[h!tbp]
+\bashsourcefile{./code/build-verilator.sh}
+\caption{Building Verilator from \Gls{source} on Debian-derivative Linux Distributions}
+\label{lst:Build_Verilator_from_Source}
+\end{listing}
+
+\subsubsection{Fetching Chipyard and its Direct Dependencies}\label{sec:Fetching_Chipyard_Direct_Dependencies}
+In addition to the library and external programs that Chipyard depends on, it also uses git submodules to track direct dependencies.
+Direct dependencies are projects that Chipyard directly relies on.
+These include SiFive's CPU designs, the \nameref{sec:BOOM_Generator} CPU design, \nameref{sec:Rocket_Chip}, and several others.
+
+\Cref{lst:Fetch_Chipyard_and_Submodules} has been provided that handles this for you.
+
+\begin{listing}[h!tbp]
+\bashsourcefile{./code/fetch-chipyard-and-submodules.sh}
+\caption{Fetch Chipyard and Submodules}
+\label{lst:Fetch_Chipyard_and_Submodules}
+\end{listing}
+
+\subsection{Building a Toolchain}\label{sec:Building_Toolchain}
+To compile programs from C to RISC-V instructions, there are several tools you need, when grouped together is called a toolchain.
+Your cloned Chipyard repository contains a script to install these.
+You can run the script to build a good general-purpose toolchain using \Cref{lst:Build_RISCV_Toolchain} or \Cref{lst:Build_RISCV_Toolchain-Parallel} while inside your local copy of the cloned Chipyard repository.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+./scripts/build-toolchains.sh riscv-tools
+\end{bashsource}
+\caption{Build \Gls{riscv} Toolchain}
+\label{lst:Build_RISCV_Toolchain}
+\end{listing}
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+export MAKEFLAGS=-j[N]; ./scripts/build-toolchains.sh riscv-tools}
+\end{bashsource}
+\caption{Parallel Build \Gls{riscv} Toolchain}
+\label{lst:Build_RISCV_Toolchain-Parallel}
+\end{listing}
+
+\subsubsection{Environment Variables}\label{sec:Environment_Variables}
+Once the toolchain is built, an environment-setup script is emitted to the root of your local copy of Chipyard, with the name \file{env.sh} (located at \file{chipyard/env.sh}).
+This file is a bash script that changes your \texttt{PATH}, \texttt{RISCV}, and \texttt{LD\_LIBRARY\_PATH} environment variables so that Chipyard can find everything it needs.
+
+To alleviate any issues that may occur due to misconfigured or non-existent environment variables, we recommend you do one of the following:
+\begin{enumerate}
+\item Add the line \bashinline{source /path/to/chipyard/env.sh} to the end of your \file{.bashrc} file in your home directory.
+  After adding this to your \file{.bashrc} file, restart your shell.
+  Or re-source your \file{bashrc} (\bashinline{source .bashrc}) and continue.
+\item Install the \href{https://direnv.net/}{\texttt{direnv}} package and use it to automatically change your environment variables for you, instead of having them constantly loaded the way the previous option does.
+\end{enumerate}
+
+\section{Example CPU Design}\label{sec:Example_CPU_Design}
+In this section, we show how to build and simulate the default CPU Chipyard defines.
+This particular CPU is relatively easy to \glslink{elaboration}{elaborate}, requiring just \SI{6}{\giga\byte} of memory.
+
+\subsection{Building the Example Design}\label{sec:Building_Example_Design}
+To build the example design that Chipyard defines, all you must do is enter one of the simulator directories and type \bashinline{make}.
+This \textbf{does} require that both the RISC-V toolchain you built and Verilator Verilog simulator be loaded into your environment~(see \Cref{sec:Environment_Variables}).
+If one of these is not available, \texttt{make} will print out an error message why it is failing.
+
+\begin{blackbox}
+  We strongly recommended that you parallelize the \gls{elaboration} of the CPU design.
+  You can achieve this by passing the \texttt{-j [N]} flag to \bashinline{make}.
+  You may replace the \texttt{[N]} with a number to indicate the number of your CPU cores to use for building.
+
+  \textbf{If you omit the \texttt{[N]} entirely, the build system will use ALL cores!}
+
+  The \gls{elaboration} of the default \texttt{RocketConfig} requires about \SI{6.5}{\giga\byte} of main memory.
+  Otherwise the process will fail with \bashinline{make: *** [firrtl_temp] Error 137} which is most likely related to limited resources.
+  Other configurations might require even more main memory~\cite{chipyard}.
+
+  Using many cores increases the amount of system memory required, so be sure that you do not request too many cores be used if you are limited on memory.
+\end{blackbox}
+
+The commands to run, in order, are:
+\begin{enumerate}
+\item \bashinline{cd chipyard/sims/verilator}
+\item \bashinline{make}
+\end{enumerate}
+
+Finishing the \gls{elaboration} of the design produces an \textbf{executable} called \file{simulator-chipyard-RocketConfig}.
+This executable is capable of running any RISC-V compatible code.
+
+\subsection{Running the Example Design}\label{sec:Running_Example_Design}
+To run arbitrary code, the executable takes the \Gls{elf} file of the program to run as a parameter.
+An example of the command to run is shown in \Cref{lst:Running_Example_Design}.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+./simulator-chipyard-RocketConfig $RISCV/riscv64-unknown-elf/share/riscv-tests/isa/rv64ui-p-simple
+\end{bashsource}
+\caption{Run Arbitrary RISC-V Programs using Example Design}
+\label{lst:Running_Example_Design}
+\end{listing}
+
+Chipyard also provides a quality-of-life \texttt{make} target when running these programs, shown in \Cref{lst:Running_Example_Design-Make}.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+make run-binary BINARY=<path/to/riscv/elf>
+\end{bashsource}
+\caption{\texttt{make} command to run arbitrary RISC-V programs using Example Design}
+\label{lst:Running_Example_Design-Make}
+\end{listing}
+
+Using the \texttt{make} target also allows the built design to accept many common command line options, including redirecting \texttt{STDOUT} to a file.
+
+\subsection{Simulating the Example Design}\label{sec:Simulating_Example_Design}
+Similar to \Cref{sec:Running_Example_Design}, the simulations are actually just a set of \Gls{riscv} programs designed to test the built designs.
+There are two main commands for running the simulation test suite: \Cref{lst:ASM_Tests,lst:Run_Benchmark_Tests}.
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+make run-asm-tests
+\end{bashsource}
+\caption{Run Compliance Tests to RISC-V ISA}
+\label{lst:ASM_Tests}
+\end{listing}
+
+\begin{listing}[h!tbp]
+\begin{bashsource}
+make run-bmark-tests
+\end{bashsource}
+\caption{Run Benchmark Tests}
+\label{lst:Run_Benchmark_Tests}
+\end{listing}
+
+\begin{blackbox}
+  To parallelize the Verilator simulator, you must pass the \texttt{VERILATOR\_THREADS} variable to \bashinline{make}.
+  As an example, \bashinline{make VERILATOR_THREADS=4} will inform Verilator to use 4 cores/threads when simulating the design.
+
+  Note that if you pass the \texttt{-j[N]} flag to \texttt{make}, then \textbf{each} spawned thread will use the specified number of \texttt{VERILATOR\_THREADS}.
+  The result is that you will need $\mathtt{N} \times \mathtt{VERILATOR\_THREADS}$ to simulate the design.
+  If you do not have that many cores on your hosting CPU, the simulation will be greatly slowed.
+\end{blackbox}
+
+\section{Xilinx Vivado Suite Installation}\label{sec:Xilinx_Vivado_Suide_Install}
+It is important to install the \href{https://www.xilinx.com/support/download.html}{Xilinx Vivado Suite} if any work regarding an \Gls{fpga} is to be conducted.
+The suite features tools a variety of tools used in teh design, building, and testing of hardware designs using \glspl{softcore}.
+
+Vivado, one of the programs in the suite, is used for all aspects of managing \Glspl{fpga}.
+It handles the setup process for the \Gls{fpga}, writing the bitstream to the \Gls{fpga}, among many other features.
+
+We used the ``offline installation'' version of the Xilinx Unified Installer (version 2020.2), so no \nth{3} party libraries would need to be installed.
+Xilinx is supported for a variety of operating systems, including Ubuntu\footnote{Xilinx only officially offers support for Ubuntu 16.04.2 LTS, but it should work on any Ubuntu version since then.}
+
+When conducting the installation, be sure to select the ``Vitis'' installation target instead of just selecting ``Vivado''.
+Installing Vitis will install both Vivado, and all other Xilinx tools needed for implementing FPGA projects.
+
+\section{Other Useful Projects}\label{sec:Other_Useful_Projects}
+\subsection{Freedom E SDK}\label{sec:Freedom_E_SDK}
+\href{https://github.com/sifive/freedom-e-sdk}{This repository} is maintained by SiFive, and provides several useful tools for designing, uploading, and debugging software to FPGA devices~\cite{freedomESDK}.
+This repository is specifically meant for use with SiFive IP, but can still be utilized for Chipyard projects with some modification.
+
+For setting up this repository with its dependencies and compiling the necessary programs, refer to their \href{https://github.com/sifive/freedom-e-sdk#setting-up-the-sdk}{Prerequisites section}.
+
+\subsection{Freedom Tools}\label{sec:Freedom_Tools}
+\href{https://github.com/sifive/freedom-tools}{This repository} is maintained by SiFive~\cite{freedomTools}.
+It will be used to generate several tools that will be used during this project, such as:
+\begin{itemize}
+\item The GCC cross-compiler for RISC-V (and many extension sets of RISC-V)
+\item OpenOCD, which assists users in debugging their FPGA designs
+\item RISC-V QEMU for system testing through emulation
+\item And other useful software.
+\end{itemize}
+% TODO: Explain what each of these programs does.
+
+These tools take a considerable amount of time and disk space to compile so it is best to run \texttt{make} as \bashinline{bash}{make -j`nproc`} to parallelize compiling.
+Note that this will consume many system resources, and you should be prepared to have an unresponsive machine while the system is building these tools.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../doc"
+%%% End:

@@ -1,0 +1,362 @@
+% No need to add periods at the end of descriptions.
+% LaTeX will add those for you. You only need to worry about periods in the middle
+% of the description.
+% DO NOT CAPITALIZE NORMAL GLOSSARY ENTRIES' name FIELD!!
+% Instead, keep it lowercase, and use the \Gls command to have LaTeX uppercase
+% the letter for you.
+
+\newglossaryentry{socg}{
+  name = {System on a Chip},
+  description = {An integrated circuit that integrates all or most components of a computer or other electronic system},
+}
+
+\newglossaryentry{soc}{
+  type = \acronymtype,
+  name = {SoC},
+  description = {System on a Chip},
+  first = {SoC~(System on a Chip)\glsadd{socg}},
+  see=[Glossary:]{socg}
+}
+
+\newglossaryentry{fpgag}{
+  name = {Field Programmable Gate Array},
+  description = {An integrated circuit designed to be configured by a customer or a designer after manufacturing using software},
+}
+
+%\newacronym{fpga}{FPGA}{\Gls{FPGA}}
+\newglossaryentry{fpga}{
+  type = \acronymtype,
+  name = {FPGA},
+  description = {Field Programmable Gate Array},
+  first = {FPGA~(Field Programmable Gate Array)\glsadd{fpgag}},
+  see=[Glossary:]{fpgag}
+}
+
+% \newacronym{nic}{NIC}{Network Interface Card}
+\newglossaryentry{nic}{
+  type = \acronymtype,
+  name = {NIC},
+  description = {Network Interface Card},
+}
+
+\newglossaryentry{irg}{
+  name = {Intermediate Representation},
+  description = {The data structure or code used internally by a compiler or virtual machine to represent source code.
+    An IR is designed to be conducive for further processing, such as optimization and translation},
+}
+
+\newglossaryentry{ir}{
+  type = \acronymtype,
+  name = {IR},
+  description = {Intermediate Representation},
+  first = {IR~(Intermediate Representation)\glsadd{irg}},
+  see=[Glossary:]{irg}
+}
+
+\newglossaryentry{firrtlg}{
+  name = {Flexible Intermediate Representation Register Transfer Language},
+  description = {An \gls{ir} for digital circuits designed as a platform for writing circuit-level transformations},
+}
+
+\newglossaryentry{firrtl}{
+  type = \acronymtype,
+  name = {FIRRTL},
+  description = {Flexible Intermediate Representation Register Transfer Language},
+  first = {FIRRTL~(Flexible Intermediate Representation Register Transfer Language)\glsadd{firrtlg}},
+  see=[Glossary:]{firrtlg}
+}
+
+\newglossaryentry{rtlg}{
+  name = {Register Transfer Language},
+  description = {A type of object code a kind of intermediate representation that is very close to assembly language, such as that which is used in a compiler.
+    It is used to describe data flow at the register-transfer level of an architecture},
+}
+
+\newglossaryentry{rtl}{
+  type = \acronymtype,
+  name = {RTL},
+  description = {Register Transfer Language},
+  first = {RTL~(Register Transfer Language)\glsadd{rtlg}},
+  see=[Glossary:]{rtlg}
+}
+
+\newglossaryentry{dslg}{
+  name = {Domain-Specific Language},
+  description = {A computer language specialized to a particular application domain},
+}
+
+\newglossaryentry{dsl}{
+  type = \acronymtype,
+  name = {DSL},
+  description = {Domain-Specific Language},
+  first = {\texttt{DSL}~(Domain-Specific Language)\glsadd{dslg}},
+  see=[Glossary:]{dslg}
+}
+
+\newglossaryentry{sbtg}{
+  name = {Scala Build Tool},
+  description = {sbt is an open-source Scala-based \Gls{dsl} to express parallel processing task graphs as a build tool for Scala and Java projects, similar to Apache's Maven and Ant},
+}
+
+\newglossaryentry{sbt}{
+  type = \acronymtype,
+  name = {\texttt{sbt}},
+  description = {Scala Build Tool},
+  first = {\texttt{sbt}~(Scala Build Tool)\glsadd{sbtg}},
+  see=[Glossary:]{sbtg}
+}
+
+\newglossaryentry{softcore}{
+  name = {Softcore},
+  description = {A digital circuit design (typically a logic core) that can be wholly described and implemented using software and logic synthesis.
+    Such a design is typically written out to an \gls{fpga}, but can be written out to other programmable logic devices},
+}
+
+\newglossaryentry{simdg}{
+  name = {Single Instruction Multiple Data},
+  description = {Operations defined using a single instruction that takes multiple data values in simultaneously},
+}
+
+\newglossaryentry{simd}{
+  type = \acronymtype,
+  name = {SIMD},
+  description = {Single Instruction Multiple Data},
+  first = {SIMD~(Single Instruction Multiple Data)\glsadd{simdg}},
+  see=[Glossary:]{simdg}
+}
+
+\newglossaryentry{mmiog}{
+  name = {Memory-Mapped Input/Output},
+  description = {Memory-mapped Input/Output uses the same address space to address both memory and I/O devices.
+    The memory and registers of the I/O devices are mapped to (associated with) address values},
+}
+
+\newglossaryentry{mmio}{
+  type = \acronymtype,
+  name = {MMIO},
+  description = {Memory-Mapped I/O},
+  first = {MMIO~(Memory-Mapped Input/Output)\glsadd{mmiog}},
+  see=[Glossary:]{mmiog}
+}
+
+\newglossaryentry{iotg}{
+  name = {Internet of Things},
+  description = {A dynamic global network infrastructure with self-configuring capabilities based on standard and interoperable communication protocols where physical and virtual ``things'' have identities, physical attributes, and virtual personalities and use intelligent interfaces, and are seamlessly integrated into the information network, often communicate data associated with users and their environments~\cite{iotBook}},
+}
+
+\newglossaryentry{iot}{
+  type = \acronymtype,
+  name = {IoT},
+  description = {Internet of Things},
+  first = {IoT~(Internet of Things)\glsadd{iotg}},
+  see=[Glossary:]{iotg}
+}
+
+\newglossaryentry{isag}{
+  name = {Instruction Set Architecture},
+  description = {An abstract model of a computer. It is also referred to as architecture or computer architecture.
+    A realization of an ISA, such as a central processing unit (CPU), is called an implementation},
+}
+
+\newglossaryentry{isa}{
+  type = \acronymtype,
+  name = {ISA},
+  description = {Instruction Set Architecture},
+  first = {ISA~(Instruction Set Architecture)\glsadd{isag}},
+  see=[Glossary:]{isag}
+}
+
+\newglossaryentry{uartg}{
+  name = {Universal Asynchronous Receiver-Transmitter},
+  description = {Computer hardware device for asynchronous serial communication in which the data format and transmission speeds are configurable},
+}
+
+\newglossaryentry{uart}{
+  type = \acronymtype,
+  name = {UART},
+  description = {Universal Asynchronous Receiver-Transmitter},
+  first = {UART~(Universal Asynchronous Reciever-Transmitter)\glsadd{uartg}},
+  see=[Glossary:]{uartg}
+}
+
+\newglossaryentry{spig}{
+  name = {Serial Peripheral Interface},
+  description = {A synchronous serial communication interface specification used for short-distance communication, primarily in embedded systems},
+}
+
+\newglossaryentry{spi}{
+  type = \acronymtype,
+  name = {SPI},
+  description = {Serial Peripheral Interface},
+  first = {SPI~(Serial Peripheral Interface)\glsadd{spig}},
+  see=[Glossary:]{spig}
+}
+
+\newglossaryentry{jvmg}{
+  name = {Java Virtual Machine},
+  description = {A virtual machine that enables a computer to run Java programs as well as programs written in other languages that are also compiled to Java bytecode},
+}
+
+\newglossaryentry{jvm}{
+  type = \acronymtype,
+  name = {JVM},
+  description = {Java Virtual Machine},
+  first = {JVM~(Java Virtual Machine)\glsadd{jvmg}},
+  see=[Glossary:]{jvmg}
+}
+
+\newglossaryentry{elaboration}{
+  name = {elaboration},
+  description = {The build process of processor design generation.
+    This involves finding all necessary submodules and ``gluing'' them together using the \texttt{TileLink} standard},
+}
+
+\newglossaryentry{riscv}{
+  name = {RISC-V},
+  description = {The fifth revision of an open-source \Gls{riscg} architecture, developed at University of California Berkeley},
+}
+
+\newglossaryentry{riscg}{
+  name = {Reduced Instruction Set Computer},
+  description = {A computer with a small, highly optimized set of instructions, rather than the more specialized set often found in other types of architecture},
+}
+
+\newglossaryentry{risc}{
+  type = \acronymtype,
+  name = {RISC},
+  description = {Reduced Instruction Set Computer},
+  first = {RISC~(Reduced Instruction Set Computer)\glsadd{riscg}},
+  see=[Glossary:]{riscg}
+}
+
+\newglossaryentry{source}{
+  name = {source},
+  description = {Source code for a project.
+    In the context of building software, building from source means compiling the project manually},
+}
+
+\newglossaryentry{man}{
+  name = {\texttt{man}},
+  description = {Command to fetch and open \texttt{man}ual pages from the system's informational database},
+}
+
+\newglossaryentry{multithread}{
+  name = {Multi-thread},
+  description = {The act of using multiple processes simultaneously, allowing for parallel computation},
+}
+
+\newglossaryentry{lazy_evaluation}{
+  name = {lazy evaluation},
+  description = {Computation model where expressions are evaluated as late as possible during program execution.
+    This allows for infinitely recursive structures that do not cause program non-termination.
+    Lazy evaluation tends to be most frequently used in functional programming languages, like \Gls{scala}},
+}
+
+\newglossaryentry{scala}{
+  name = {Scala},
+  description = {A strong statically typed general-purpose programming language which supports both object-oriented programming and functional programming.
+    Designed to be concise, many of Scala's design decisions are aimed to address criticisms of Java},
+}
+
+\newglossaryentry{generator}{
+  name = {Generator},
+  description = {A singular, \glslink{parameterize}{parameterized} design that receives a number of parameters, and returns a number of objects (potentially one, or many) based on the provided information},
+}
+
+\newglossaryentry{extensible}{
+  name = {Extensible},
+  description = {An original product, built by someone else, can be \textbf{extended} to meet new requirements or to offer new functionality},
+}
+
+\newglossaryentry{parameterize}{
+  name = {Parameterize},
+  description = {The ability for an object to receive input parameters to change its behavior.
+    This is the key functionality that allows a \gls{generator} to work},
+}
+
+\newglossaryentry{aws}{
+  type = \acronymtype,
+  name = {AWS},
+  description = {Amazon Web Services},
+  first = {AWS~(Amazon Web Services)},
+}
+
+\newglossaryentry{elfg}{
+  name = {Executable and Linkable Format},
+  description = {A common standard file format for executable files, object code, shared libraries, and core dumps},
+}
+
+\newglossaryentry{elf}{
+  type = \acronymtype,
+  name = {ELF},
+  description = {Executable and Linkable Format},
+  first = {ELF~(Executable and Linkable Format)\glsadd{elfg}},
+  see=[Glossary:]{elfg}
+}
+
+\newglossaryentry{accelerator}{
+  name = {accelerator},
+  description = {A specialized processing unit that performs a single set of tasks very effectively.
+    These can be thought of like \Glspl{dsl} for hardware.
+    Some accelerators are domain-specific \Glspl{soc}, which are more like a regular CPU design, but are still not general-purpose compute units},
+}
+
+\newglossaryentry{assembly}{
+  name = {assembly},
+  description = {Any low-level programming language in which there is a very strong correspondence between the instructions in the language and the architecture's machine code instructions.
+    Because assembly depends on the machine code instructions, every assembly language is designed for exactly one specific computer architecture.
+    \Gls{jtag} assembly language may also be called symbolic machine code}
+}
+
+\newglossaryentry{ciscg}{
+  name = {Complex Instruction Set Computer},
+  description = {A computer in which single instructions can execute several low-level operations (such as a load from memory, an arithmetic operation, and a memory store) or are capable of multi-step operations or addressing modes within single instructions},
+}
+
+\newglossaryentry{cisc}{
+  type = \acronymtype,
+  name = {CISC},
+  description = {Complex Instruction Set Computer},
+  first = {CISC~(Complex Instruction Set Computer)\glsadd{ciscg}},
+  see=[Glossary:]{ciscg}
+}
+
+\newglossaryentry{jtag}
+{type = \acronymtype,
+ name = {JTAG},
+ description = {Joint Test Action Group},
+ first = {JTAG~(Joint Test Action Group)\glsadd{jtagg}},
+ see = [Glossary:]{jtagg}
+ }
+\newglossaryentry{jtagg}
+{
+ name={JTAG},
+ description={An industry standard connector type for verifying designs and testing printed circuit boards after manufacture. Used for communicating at a low level with the SoC design implemented in Chipyard}
+ }
+
+\newglossaryentry{mcs}
+{
+ type = \acronymtype,
+ name = {MCS},
+ description = {Memory Configuration File Format},
+ first = {MCS~(Memory Configuration File Format)\glsadd{mcsg}},
+ see = [Glossary:]{mcsg}
+}
+
+\newglossaryentry{mcsg}
+{
+ name={MCS},
+ description={A descriptive file containing the contents of what will be flashed to the \Gls{fpga} utilizing ASCII format. MCS files include additional information beyond the payload, such as headers and comment information}
+}
+
+\newglossaryentry{spike}
+{
+ name={SPIKE},
+ description={A RISC-V ISA Simulator that is useful for validating the results of a SoC implementation to ensure the ISA is implemented correctly}
+}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "doc"
+%%% End:

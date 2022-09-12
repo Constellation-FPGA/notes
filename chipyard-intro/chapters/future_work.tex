@@ -1,0 +1,81 @@
+\chapter{Future Work}\label{chap:Future_Work}
+In this chapter, we present opportunities that we feel can be leveraged due to the initial work we did during this research project.
+We have chosen to break these opportunities up into several categories, each presented in a section below.
+
+\section{Additional Research}\label{sec:Additional_Research}
+Chipyard is a large and very complicated piece of software.
+Simply getting over the initial hurdle of getting Chipyard to work and getting the generated \Gls{fpga} image written out comprised a majority of our work.
+If we had more time to investigate Chipyard and become more familiar with its inner workings, we would like to further explore:
+\begin{itemize}
+\item Creating custom heterogenous CPU designs, elaborating them, and writing them out to an \Gls{fpga}.
+\item Booting a minimal Linux kernel on the generated \gls{softcore}.
+
+\item Adding additional peripheral device functionality for the Arty and other \Gls{fpga} boards in Chipyard (buttons, LEDs, GPIO, etc.)
+
+\item Writing a new C programming library for the Chipyard FPGA framework, and incorperating \Gls{jtag} debugger functionality directly into the framework.
+
+\item Modeling performance of \gls{softcore} \Gls{riscv} designs versus discrete implementations.
+\end{itemize}
+
+\section{Academic Applications}\label{sec:Academic_Applications}
+\Gls{riscv} offers a lot to the academic world because it is a open-source CPU design.
+This offers the chance to investigate the inner workings of the CPU and its implementation significantly more than many other architectures.
+In fact, because \Gls{riscv} has been created by the \UCB{}, there are already academic materials available for use.
+
+In the sections below, we discuss several courses offered at \IIT{} that, we believe, would be perfect candidates for a revamp using \Gls{riscv} and Chipyard.
+
+\subsection{\href{http://bulletin.iit.edu/search/?P=ECE 242}{ECE~242 --- Digital Computers and Computing}}\label{sec:ECE_242}
+ECE~242 is intended to be an introductory course to some of the lowest levels of digital computing.
+Namely, this involves in-depth discussion around both \Gls{cisc} and \Gls{risc} architectures, their differences, and how to write \gls{assembly}~\cite{iitECE242}.
+
+Currently, the \Gls{risc} architecture taught is \href{https://en.wikipedia.org/wiki/MIPS_architecture}{MIPS}.
+We feel that this is not going to help students in their future work, so we suggest teaching \Gls{riscv} instead.
+The base instruction set is not much more complicated, with just forty-seven~(47) instructions for the user-level 32-bit integer instruction set~\cite[pp.~9--26]{riscvISASpec}.
+Because the \Gls{riscv} \Gls{isa} is significantly more modern, many of the concepts learned here will still translate to other \Gls{risc} \Glspl{isa}.
+
+By virtue of being more modern, students will gain an appreciation and knowledge of an architecture that they are far more likely to encounter in their career.
+This is because \Gls{riscv} supports mixing and matching extensions, so the processors can actually be designed for anything from an embedded microcomputer to high performance computing.
+
+\subsection{\href{http://bulletin.iit.edu/search/?P=ECE 441}{ECE~441 --- Microcomputers and Embedded Computing}}\label{sec:ECE_441}
+ECE~441 teaches the concept of embedded computing in more depth.
+It handles more advanced microprocessor features, such as hardware interrupting, memory design, and \Gls{mmio}~\cite{iitECE441}.
+
+In previous iterations of this course, the SANPER-1 Educational Lab Unit was used.
+This system is based on the \href{https://en.wikipedia.org/wiki/Motorola_68000}{Motorola 68000} series microprocessor.
+Although there would be some work required to move from a \Gls{cisc} architecture to a \Gls{risc} one, we feel it is appropriate given how the world has already and will continue to move forward.
+Although the principles in the MC68k are sound, they are also quite outdated.
+We suggest a \Gls{riscv} CPU that implements the RV32E integer instruction set~\cite[p.~25]{riscvISASpec} because this course is particularly focused on embedded computing.
+
+\Gls{riscv} processors can be built with the ability to have their bus cycles interrupted, which is a key feature of the SANPER.\@
+In addition, highly desired features can be implemented in the \Gls{riscv} processor's hardware, by extending the already defined instructions with new ones.
+This customization and flexibility is already making \Gls{riscv} a major competitor in the industrial world.
+Taking this same flexible system and bringing it to academia will allow for further \Gls{riscv} environment maturation and more academically up-to-date graduates.
+
+Taking this a step further, to keep the devices up-to-date, using an \Gls{fpga} might be appropriate as well.
+This would allow for greater diversity in CPU design exposure during hte actual laboratory session.
+If need be, key functionality can be added to the system between laboratory sessions.
+
+\subsection{\href{http://bulletin.iit.edu/search/?P=ECE 485}{ECE~485 --- Computer Organization and Design}}\label{sec:ECE_485}
+ECE~485 is designed to teach fundamental concepts of computer architecture, organization, and design~\cite{iitECE485}.
+All of these topics can be covered and explored in even \emph{more} depth by having access to an \gls{extensible} \Gls{isa}.
+
+Many of the sub-projects that Chipyard makes use of would be very appropriate for a reworked version of this course.
+The \nameref{sec:cva6_Generator} and \nameref{sec:RISC-V_Sodor} would be perfect for this course.
+They are already very small designs, implementing minimal functionality.
+
+The \nameref{sec:RISC-V_Sodor} design would be best for introducing topics, because it has multiple stages that support different levels of simulation.
+Because the simulations are done completely in software, there is minimal student overhead for testing new designs and learning about how the system is designed.
+The different stages allow for students to view and simulate progressively more complex CPU designs.
+
+The \nameref{sec:cva6_Generator} could be used as a simpler example of a full CPU design, as it supports multiple extensions and multiple privilege levels.
+Because the \nameref{sec:cva6_Generator} is a single issue, in-order design, the circuitry is less complex than similar chips (\nameref{sec:Rocket_Chip} and \nameref{sec:BOOM_Generator}).
+This makes the \nameref{sec:cva6_Generator} perfect to show component integration onto a single device.
+
+We believe focusing the revamped version of this course around an \Gls{fpga} would also be most appropriate, as students could make new designs on-the-fly and test them.
+This could open a completely different world up to this course.
+Being able to not only learn about processor architecture and design, but the chance to implement this functionality on an \Gls{fpga} would make everything being learned tangible.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../doc"
+%%% End:
