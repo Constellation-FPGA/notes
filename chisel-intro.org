@@ -4,3 +4,16 @@
 * Beginner Materials
   1. [[https://github.com/freechipsproject/chisel-bootcamp][Chisel Bootcamp (From Chisel Working-Group)]]
   2. [[https://github.com/ucb-bar/chisel-tutorial][Chisel Tutorial (From Berkeley)]]
+
+* References
+  1. [[https://www.imm.dtu.dk/~masca/chisel-book.html][Digital Design with Chisel]]
+     #+begin_src bibtex
+@book{chisel:book,
+   title = {Digital Design with Chisel},
+   publisher = {Kindle Direct Publishing},
+   year = {2019},
+   author = {Martin Schoeberl},
+   url = {https://github.com/schoeberl/chisel-book}
+}
+     #+end_src
+     [[https://github.com/schoeberl/chisel-book][Book Source]]
