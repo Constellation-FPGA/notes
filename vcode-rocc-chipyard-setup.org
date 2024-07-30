@@ -114,10 +114,9 @@ $ cd riscv-gnu-toolchain
 
 *** Configure
 #+begin_src sh
-$ ./configure --prefix="$RISCV" --with-arch=rv64gcv_zicsr --with-abi=lp64d --with-cmodel=medany --enable-multilib
-
+$ ./configure --prefix="$RISCV" --with-arch=rv64gcv_zicsr --with-abi=lp64d --with-cmodel=medany
+# If you want LLVM/Clang support
 $ ./configure --prefix="$RISCV" --enable-llvm --disable-linux --with-arch=rv64gc --with-abi=lp64d
-$ ./configure --prefix="$RISCV" --with-cmodel=medany --with-arch=rv64gcv_zicsr --enable-multilib
 #+end_src
 
 *** Build
