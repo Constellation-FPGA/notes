@@ -17,3 +17,6 @@
 }
      #+end_src
      [[https://github.com/schoeberl/chisel-book][Book Source]]
+
+* Setting up a Project
+  1. [[https://inst.eecs.berkeley.edu/~cs250/sp16/handouts/chisel-getting-started.pdf][Chisel Getting Started & Setting up a Project]]
