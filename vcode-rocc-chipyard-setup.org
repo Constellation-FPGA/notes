@@ -149,7 +149,7 @@ $ git checkout vcode-rocc
 
 *** Setup
 #+begin_src sh
-$ ./build-setup.sh --skip-conda --skip-precompile --skip-firesim --skip-marshal
+$ ./build-setup.sh --skip-conda --skip-precompile --build-circt --skip-firesim --skip-marshal
 #+end_src
 
 *** Initialize Submodules
