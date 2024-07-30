@@ -147,6 +147,11 @@ $ cd chipyard
 $ git checkout vcode-rocc
 #+end_src
 
+*** Setup
+#+begin_src sh
+$ ./build-setup.sh --skip-conda --skip-precompile --skip-firesim --skip-marshal
+#+end_src
+
 *** Initialize Submodules
 #+begin_src sh
 $ ./scripts/init-submodules-no-riscv-tools.sh
