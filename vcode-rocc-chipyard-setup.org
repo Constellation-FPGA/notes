@@ -2,6 +2,9 @@
 #+AUTHOR: Karl Hallsby
 
 * Dependencies
+If you are on a system where Nix is available, all of these dependencies are provided for you in ~flake.nix~.
+You must still build the [[*\[\[https://github.com/riscv-collab/riscv-gnu-toolchain\]\[RISC-V GNU Toolchain\]\]][toolchain]] and [[*Chipyard][Chipyard]] manually, but you will not need to install any of the third-party dependencies.
+
 ** Verilator
 Verilator is needed by Chipyard to compile software simulations.
 
