@@ -137,6 +137,8 @@ All of the instructions below can also be found on [[https://chipyard.readthedoc
 There are lots of dependencies.
 Look at the [[*Quick Setup][Quick Setup]] scripts for what you will need.
 
+Make sure you build the [[*\[\[https://github.com/riscv-collab/riscv-gnu-toolchain\]\[RISC-V GNU Toolchain\]\]][toolchain]] first!
+
 *NOTE: You should use openjdk 17!*
 openJDK 18 has some known issues with Scala & SBT.
 
@@ -147,38 +149,17 @@ $ cd chipyard
 $ git checkout vcode-rocc
 #+end_src
 
+*** Set Environment Variables
+This can be turned into a script you source too.
+#+begin_src sh
+$ export RISCV="$(realpath path/to/toolchain/install/location)"
+$ export PATH="$RISCV/bin":$PATH
+#+end_src
+
 *** Setup
+LLVM & CIRCT will be compiled for your work, and will be installed in ~$RISCV~.
 #+begin_src sh
 $ ./build-setup.sh --skip-conda --skip-precompile --build-circt --skip-firesim --skip-marshal
-#+end_src
-
-*** Initialize Submodules
-#+begin_src sh
-$ ./scripts/init-submodules-no-riscv-tools.sh
-#+end_src
-If you checked out the ~vcode-rocc~ branch, the script will warn you that this is not an official release of Chipyard, which is expected.
-Enter ~y~ to continue with fetching all the submodules needed.
-
-Once the submodules are built, an ~env.sh~ file is generated, which creates some environment variables.
-
-*** Build RISC-V Toolchain
-I recommend you parallelize this build by exporting the ~MAKEFLAGS~ environment variable.
-#+begin_src sh
-$ export MAKEFLAGS=-jN # N is number of jobs to run in parallel
-#+end_src
-
-Because we intend to build a RoCC-based accelerator, we use the ~esp-tools~ toolchain.
-However, cursory testing shows that ~riscv-tools~ will also work.
-#+begin_src sh
-$ ./scripts/build-toolchains.sh esp-tools # for a RoCC RISC-V toolchain
-# $ ./scripts/build-toolchains.sh riscv-tools # for a normal risc-v toolchain
-#+end_src
-
-Once the toolchain is built, an ~env-<toolchain-name>.sh~ file is generated, which will then be sourced by the ~env.sh~ script.
-
-*** Source the Toolchain
-#+begin_src sh
-$ source env.sh
 #+end_src
 
 ** vcode-rocc
