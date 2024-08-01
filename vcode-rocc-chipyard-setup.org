@@ -34,10 +34,10 @@ The Chipyard documentation says you should use ~v4.034~ of Verilator.
 However, I have encountered issues with it, like a missing ~verilator.h~ header.
 This newer version appears to be compatible, but it does throw extra warnings about the inference of certain edge-triggered flip-flops.
 #+begin_src sh
-$ git checkout v4.224
+$ git checkout v5.010
 $ autoconf
 $ ./configure --prefix=<binary-install-directory>
-# My preference is --prefix="$HOME/verilator-v4.224-install"
+# My preference is --prefix="$HOME/verilator-v5.010-install"
 #+end_src
 
 *** Build
@@ -62,7 +62,7 @@ Chipyard requires that the binaries created by verilator be in ~$PATH~.
 I prefer to just export the directory in my ~.bashrc~.
 I usually prepend my verilator install to the front of ~$PATH~ to ensure I use my install first.
 #+begin_src sh
-export PATH="$HOME/verilator-v4.224-install/bin":"$PATH"
+export PATH="$HOME/verilator-v5.010-install/bin":"$PATH"
 #+end_src
 
 You can check that you are using the right Verilator with the commands below:
