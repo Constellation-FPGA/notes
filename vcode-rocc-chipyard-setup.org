@@ -133,7 +133,7 @@ I recommend that you parallelize the compilation by exporting ~MAKEFLAGS~.
 #+begin_src sh
 $ export MAKEFLAGS='-j8' # Increase the number for more parallelism.
 
-$ make && make linux
+$ make clean && make && make clean && make linux
 #+end_src
 
 After building, if you run the following command, you should see the follwoing output:
