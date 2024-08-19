@@ -112,6 +112,14 @@ $ git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git
 $ cd riscv-gnu-toolchain
 #+end_src
 
+Note that as of 2024-08-05, you will need to use tag ~2024.08.03~ for Chipyard to finish building its toolchain collateral (ISA simulator in particular).
+This is because [[https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;a=blob_plain;f=gas/NEWS;;hb=refs/tags/binutils-2_43][GNU Binutils 2.43]] dropped support for [[https://www2.eecs.berkeley.edu/Pubs/TechRpts/2016/EECS-2016-129.pdf][RISC-V Privileged Instruction Set v1.9]] in GAS, while Chipyard collateral still uses CSRs defined in that standard.
+#+begin_src sh
+$ git checkout 2024.08.03 --
+#+end_src
+
+This should be fixed in the near future, but I am documenting this now because it took a long time to track down.
+
 *** Configure
 #+begin_src sh
 $ ./configure --prefix="$RISCV" --with-arch=rv64gcv_zicsr --with-abi=lp64d --with-cmodel=medany
