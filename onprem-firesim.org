@@ -1,0 +1,62 @@
+#+TITLE: On-Premises Firesim Setup
+
+A collection of fixes and small changes that need to be made for Firesim 1.20.1 to work.
+
+* Firemarshal Fixes
+** Define the Firesim Directory
+This must be done for ~marshal install~ to work.
+
+#+begin_src diff
+diff --git a/wlutil/default-config.yaml b/wlutil/default-config.yaml
+index d458a9a..dcc4cc9 100644
+--- a/wlutil/default-config.yaml
++++ b/wlutil/default-config.yaml
+@@ -19,7 +19,7 @@ mount-dir : "../disk-mount"
+
+ # Location of the FireSim repository. Used by the 'install' command. Null
+ # indicates that no FireSim installation is available.
+-firesim-dir : null
++firesim-dir : "/pool/karl/firesim-1.20.1"
+
+ # Default parallelism level to use in subcommands (mostly when calling 'make')
+ # '' means unbounded
+#+end_src
+
+** Fix Ubuntu 22+ change to ~mountpoint~ Return Code
+This is only applicable if you use a Firemarshal commit older than [[https://github.com/firesim/FireMarshal/commit/8cea603201d246be30096ff4561ed2923a05149e][8cea603201d246be30096ff4561ed2923a05149e]].
+
+#+begin_src diff
+diff --git a/wlutil/wlutil.py b/wlutil/wlutil.py
+index 7d30eda..1d959e5 100644
+--- a/wlutil/wlutil.py
++++ b/wlutil/wlutil.py
+@@ -595,7 +595,7 @@ def mountImg(imgPath, mntPath):
+
+     assert imgPath.is_file(), f"Unable to find {imgPath} to mount"
+     ret = run(["mountpoint", mntPath], check=False).returncode
+-    assert ret == 1, f"{mntPath} already mounted. Somethings wrong"
++    assert ret == 1 or ret == 32, f"{mntPath} already mounted. Somethings wrong"
+
+     uid = sp.run(['id', '-u'], capture_output=True, text=True).stdout.strip()
+     gid = sp.run(['id', '-g'], capture_output=True, text=True).stdout.strip()
+#+end_src
+
+* Fix PCIe Capability Number Detection
+Despite running ~lspci~ on the FPGA host, the ~firesim~ Python script does not use that information.
+We must manually fix the capability number to make things work.
+
+#+begin_src diff
+diff --git a/deploy/runtools/run_farm_deploy_managers.py b/deploy/runtools/run_farm_deploy_managers.py
+index 3b9491e6f..01a3d7474 100644
+--- a/deploy/runtools/run_farm_deploy_managers.py
++++ b/deploy/runtools/run_farm_deploy_managers.py
+@@ -1198,7 +1198,7 @@ class XilinxVCU118InstanceDeployManager(InstanceDeployManager):
+
+                 # TODO: is hardcoded cap 0x1 correct?
+                 # TODO: is "Partial Reconfig Clear File" useful (see xvsecctl help)?
+-                bdfs = [ { "busno": "0x" + i[:2], "devno": "0x" + i[3:5], "capno": "0x1" } for i in collect.splitlines() if len(i.strip()) >= 0 ]
++                bdfs = [ { "busno": "0x" + i[:2], "devno": "0x" + i[3:5], "capno": "0x0" } for i in collect.splitlines() if len(i.strip()) >= 0 ]
+                 bdf = bdfs[slotno]
+
+                 busno = bdf['busno']
+#+end_src
