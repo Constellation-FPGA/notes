@@ -60,3 +60,13 @@ index 3b9491e6f..01a3d7474 100644
 
                  busno = bdf['busno']
 #+end_src
+
+* ~/dev~ Fixes
+
+#+begin_src sh
+sudo chgrp firesim /dev/xdma*
+sudo chmod g+rw /dev/xmda*
+
+# Everything in default_simulation_dir/sim_slot_0 must be RW by the generic user
+# NOTE: default_simulation_dir comes from config_runtime.yaml
+#+end_src
