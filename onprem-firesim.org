@@ -2,6 +2,30 @@
 
 A collection of fixes and small changes that need to be made for Firesim 1.20.1 to work.
 
+* Firesim Workload Fixes
+The uniform baseline workload has malformed JSON.
+#+begin_src diff
+diff --git a/deploy/workloads/br-base-uniform.json b/deploy/workloads/br-base-uniform.json
+index f53f281ba..113907e6d 100644
+--- a/deploy/workloads/br-base-uniform.json
++++ b/deploy/workloads/br-base-uniform.json
+@@ -1,12 +1,12 @@
+ {
+   "benchmark_name": "br-base-uniform",
+   "common_bootbinary": "../../../target-design/chipyard/software/firemarshal/images/firechip/br-base/br-base-bin",
+-  "common_rootfs": "../../../target-design/chipyard/software/firemarshal/images/firechip/br-base/br-base.img"
++  "common_rootfs": "../../../target-design/chipyard/software/firemarshal/images/firechip/br-base/br-base.img",
+   "common_outputs": [
+     "/etc/os-release"
+   ],
+   "common_simulation_outputs": [
+     "uartlog",
+     "memory_stats*.csv"
+-  ],
++  ]
+ }
+#+end_src
+
 * Firemarshal Fixes
 ** Define the Firesim Directory
 This must be done for ~marshal install~ to work.
