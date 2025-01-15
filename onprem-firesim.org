@@ -118,3 +118,9 @@ Script done on 2025-01-15 16:40:33+00:00 [COMMAND_EXIT_CODE="134"]
 #+end_example
 
 In particular, the ~assert(fd != 1)~ is checking if the simulation setup can read/write to the various ~/dev/xdma*~ devices.
+
+* F1Shim Synthesis Errors
+This is caused by the top-level ports in the shim being renamed without the changes being reflected everywhere else in Firesim's codebases.
+This was fixed by PR https://github.com/firesim/garnet-firesim/pull/3.
+
+You must checkout the ~firesim/platforms/xilinx_vcu118/garnet-firesim~ submodule *past* commit [[https://github.com/firesim/garnet-firesim/commit/e0bb020ac0ff6c3731cb82cfc9789963a0e1c382][e0bb020ac0ff6c3731cb82cfc9789963a0e1c382]].
