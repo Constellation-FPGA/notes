@@ -1,0 +1,30 @@
+#+TITLE: RISC-V Boot Process
+
+* OpenSBI
+Starts in ~firmware/fw_base.S~.
+
+** Init
+The main C-level function is ~sbi_init~.
+
+** Boot Process
+In a multi-hart system (SMP), the firmware "decides" the boot core.
+Often, the boot core is fixed ahead-of-time, but OpenSBI /technically/ supports a lottery system to select the boot hart.
+The boot hart continues to run the single-core portions of the boot code, setting up memory, cache, etc. in a process called *cold boot*.
+The other harts are sent to wait in another assembly-level function.
+Once the boot hart finishes all platform-specific single-core initialization steps, the boot hart kicks the other harts into performing a *warm boot*.
+The warm boot process handles hart-specific boot steps (like initializing all ISA-visible registers to a well-known value).
+
+** Install Trap Handler
+The ~sbi_trap_handler~ C-function is installed into the ~MTVEC~ CSR in ~firmware/fw_base.S~.
+~sbi_trap_handler~ installed with a wrapper from assembly called ~_trap_handler~.
+
+~_trap_handler~ has several macros to hide its internals, but the important one is ~TRAP_CALL_C_ROUTINE~, which sets up the registers to match RISC-V's C ABI calling convention.
+~TRAP_CALL_C_ROUTINE~ does a ~call~/~jal~ to ~sbi_trap_handler~.
+
+** Delegation Installation
+The firmware delegates some exceptions (like user-mode ~ecall~s) in the ~sbi_hart.c~ file.
+
+* Linux
+Look at ~arch/riscv/kernel/entry.S~.
+
+* User-Space
