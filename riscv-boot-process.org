@@ -25,6 +25,19 @@ The ~sbi_trap_handler~ C-function is installed into the ~MTVEC~ CSR in ~firmware
 The firmware delegates some exceptions (like user-mode ~ecall~s) in the ~sbi_hart.c~ file.
 
 * Linux
+Like OpenSBI, Linux technically has two major entry-points, one for boot-time entry and one for trap-handling entry.
+
+Linux supports booting both in Supervisor mode (normal desktop/multi-user setup) and Machine mode (embedded setup).
+To support this, Linux uses the ~CSR_TVEC~ macro to alias between ~CSR_MTVEC~ and ~CSR_STVEC~ depending on the compile-time requested mode.
+
+** Boot
+Look at ~arch/riscv/kernel/head.S~.
+
+Finally, when the machine is ready to be used (i.e. ~/init~ can be run), ~handle_exception~ is loaded into ~CSR_TVEC~ in ~setup_trap_vector~ in ~head.S~.
+~handle_exception~ comes from ~entry.S~, and is what allows trap events (exceptions and interrupts) to end up in the kernel.
+Remember that ~ecall~s are treated like exceptions according to the RISC-V spec, which are how users can make syscalls into Linux.
+
+** Runtime
 Look at ~arch/riscv/kernel/entry.S~.
 
 * User-Space
