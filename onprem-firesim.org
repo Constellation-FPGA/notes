@@ -89,7 +89,7 @@ index 3b9491e6f..01a3d7474 100644
 The new scripts for Firesim to set up the FPGA for ~runworkload~ *rely* on being able to write to the various XMDA character devices that show up in ~/dev~.
 #+begin_src sh
 sudo chgrp firesim /dev/xdma*
-sudo chmod g+rw /dev/xmda*
+sudo chmod g+rw /dev/xdma*
 
 # Everything in default_simulation_dir/sim_slot_0 must be RW by the generic user
 # NOTE: default_simulation_dir comes from config_runtime.yaml
