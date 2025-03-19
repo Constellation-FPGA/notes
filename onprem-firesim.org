@@ -124,3 +124,11 @@ This is caused by the top-level ports in the shim being renamed without the chan
 This was fixed by PR https://github.com/firesim/garnet-firesim/pull/3.
 
 You must checkout the ~firesim/platforms/xilinx_vcu118/garnet-firesim~ submodule *past* commit [[https://github.com/firesim/garnet-firesim/commit/e0bb020ac0ff6c3731cb82cfc9789963a0e1c382][e0bb020ac0ff6c3731cb82cfc9789963a0e1c382]].
+
+* conda-lock cannot be found on conda-forge
+#+begin_src sh
+conda update -n base -c defaults conda
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda update --all
+#+end_src
