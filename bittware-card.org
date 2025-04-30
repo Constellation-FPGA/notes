@@ -1,0 +1,12 @@
+#+TITLE: All the shenaningans that were required to get the damn BittWare card to work
+#+AUTHOR: Liam Strand
+
+* PCIe Drivers
+  1. Needed to modify `/usr/sbin/bwpci` to get the bwpci service to actually
+     load the bwpcidev driver
+
+#+begin_src diff
+- moddir="/lib/modules/kernel/$(uname -r)/kernel/drivers/misc"
++ #moddir="/lib/modules/kernel/$(uname -r)/kernel/drivers/misc"
++ moddir='/opt/bwtk/2024.1/drivers/bwpci'
+#+end_src
